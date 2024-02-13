@@ -1,0 +1,27 @@
+model:
+sets:
+number/1..9/;line/1..9/;col/1..9/;gong/1..9/;
+shudu(line, col): y,a;
+link( line, col, number): x;
+endsets
+data:
+a =
+0 6 8 0 0 0 0 0 0
+0 0 0 0 7 0 0 4 0
+0 0 0 5 0 0 3 0 0
+0 0 0 0 8 2 0 0 0
+3 0 0 0 0 0 5 0 0
+0 0 0 0 0 0 1 0 0
+5 0 0 3 0 0 0 2 0
+0 4 0 0 0 0 0 0 6
+0 0 0 0 0 0 0 8 0;
+enddata
+min = @sum(link:x);
+@for(shudu(i, j)|a(i, j)#ge#1:x(i, j, a(i, j)) = 1);
+@for(line(i): @for(col(j): @sum(number(k): x(i, j, k)) = 1));
+@for(line(i): @for(number(k): @sum(col(j): x(i, j, k)) = 1));
+@for(col(j): @for(number(k): @sum(line(i): x(i, j, k)) = 1));
+@for(line(i): @for(col(j): y(i, j) = @sum( number(k): k*x(i, j, k))));
+@for(gong(m): @for(number(k): @sum(link(i, j, k) | 3* @floor((i - 1)/3) + @floor((j - 1)/3) + 1 #eq# m:x(i, j, k)) = 1));
+@for(link(i, j, k): @bin(x(i, j, k)));
+End
